@@ -43,10 +43,15 @@
     header("location:index.php?id=fail");
     }
     }
-
+ 
     public function sendmail($bdd) {
         $req = $bdd->prepare("SELECT * FROM utilisateur WHERE adresse = '$this->_mail'" );
         $req->execute();
-        mail($this->_mail, "Test envoi de mail","Votre inscription a été effectuée, votre token : $this->_token ");
+        mail($this->_mail, "Test envoi de mail","Votre inscription a été effectuée, confirmez votre compte : http://tas.simplon-charleville.fr/poo-exo/confirm.php?id=$this->_token");
+    }
+
+    public function confirmed($bdd) {
+        $reqconfirm = $bdd->prepare("UPDATE utilisateur SET validate = 1 WHERE token = '$idtoken'");
+        $reqconfirm->execute();
     }
 }
