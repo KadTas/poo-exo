@@ -9,9 +9,8 @@
     }
 
     public function register($bdd) {
-        $req= $bdd->prepare('INSERT INTO utilisateur (pseudo, adresse, motdepasse, id_type) VALUES (:pseudo, :adresse, :motdepasse, :id_type)');
+        $req= $bdd->prepare('INSERT INTO utilisateur (adresse, motdepasse, id_type) VALUES (:adresse, :motdepasse, :id_type)');
         $req->execute(array(
-        ':pseudo' => $this->_username,
         ':adresse' => $this->_mail,
         ':motdepasse' => $this->_password,
         'id_type' => 3));
@@ -38,5 +37,10 @@
     //Mauvais identifiant ou mauvais tout cours
     header("location:index.php?id=fail");
     }
+    }
+
+    public function sendmail($bdd) {
+
+    mail ($this->_mail, "Test d'envoi de mail","Votre inscription a été effectuée");
     }
 }
