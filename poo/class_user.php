@@ -2,18 +2,23 @@
     protected $_username;
     protected $_password;
     protected $_mail;
+    protected $_token;
+    protected $_validation;
 
     public function __construct($_password, $_mail) {
         $this->_password = $_password;
         $this->_mail = $_mail;
+        $this->_token=substr(str_shuffle(str_repeat("0123456789azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN", 40)), 0, 40);
     }
 
     public function register($bdd) {
-        $req= $bdd->prepare('INSERT INTO utilisateur (adresse, motdepasse, id_type) VALUES (:adresse, :motdepasse, :id_type)');
+        $req= $bdd->prepare('INSERT INTO utilisateur (adresse, motdepasse, id_type, token, validate) VALUES (:adresse, :motdepasse, :id_type, :token, :validate)');
         $req->execute(array(
         ':adresse' => $this->_mail,
         ':motdepasse' => $this->_password,
-        'id_type' => 3));
+        ':token' => $this->_token,
+        ':id_type' => 3,
+        ':validate' => 0));
         return $req;
     }
 
@@ -40,7 +45,8 @@
     }
 
     public function sendmail($bdd) {
-
-    mail ($this->_mail, "Test d'envoi de mail","Votre inscription a été effectuée");
+        $req = $bdd->prepare("SELECT * FROM utilisateur WHERE adresse = '$this->_mail'" );
+        $req->execute();
+        mail($this->_mail, "Test envoi de mail","Votre inscription a été effectuée, votre token : $this->_token ");
     }
 }
